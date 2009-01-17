@@ -1,5 +1,7 @@
 geo-tags photos using nmea logs
 * own nmea log file parsing
-* uses the excellent exiftool (http://www.sno.phy.queensu.ca/~phil/exiftool) to process the file
+* uses the excellent exiftool (http://www.sno.phy.queensu.ca/~phil/exiftool) to tag (regular images and camera RAW files!)
+* matches based on timestamps
+* testing with photos from Canon Ixus and 400D and nmea logs from an AMOD AGL3080
 * work in progress
 
