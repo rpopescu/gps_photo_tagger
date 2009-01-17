@@ -2,14 +2,16 @@
 
 class photo_time
 {
+	public $fname;
 	public $tz;
 	public $date;
 
 	// derived values
 	public $timestamp; // UTC timestamp
 	
-	function __construct($tz, $date)
+	function __construct($fname, $tz, $date)
 	{
+		$this->fname = $fname;
 		$this->tz = $tz;
 		$this->date = $date;
 		$this->make_timestamp();
@@ -34,7 +36,7 @@ class photo_time
 /// Returns an array of photo_time, given an array of file names.
 function get_photo_times($fnames_array, $debug_cmd = FALSE)
 {
-	$cmd = "bash -c 'exiftool -q -fast --TAG \"-EXIF:CreateDate\" --TAG \"-EXIF:TimeZoneOffset\" -d \"%Y-%m-%d %H:%M:%S\" -printFormat \"\\\$TimeZoneOffset, \\\$CreateDate\"";
+	$cmd = "bash -c 'exiftool -q -fast --TAG \"-EXIF:CreateDate\" --TAG \"-EXIF:TimeZoneOffset\" -d \"%Y-%m-%d %H:%M:%S\" -printFormat \"\\\$Directory/\\\$FileName, \\\$TimeZoneOffset, \\\$CreateDate\"";
 	foreach($fnames_array as $fname) $cmd .= " \"$fname\"";
 	$cmd .= "'";
 	if($debug_cmd) echo "$cmd\n";
@@ -51,7 +53,7 @@ function get_photo_times($fnames_array, $debug_cmd = FALSE)
 		$l = trim($l);
 		if($l == "") break;
 		$atoms = explode(",", $l);
-		$info[] = $foo = new photo_time($atoms[0], trim($atoms[1]));
+		$info[] = $foo = new photo_time(trim($atoms[0]), trim($atoms[1]), trim($atoms[2]));
 		echo $foo->time_str()."\n";
 	}
 	return $info;
