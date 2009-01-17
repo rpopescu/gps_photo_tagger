@@ -1,0 +1,5 @@
+geo-tags photos using nmea logs
+* own nmea log file parsing
+* uses the excellent exiftool (http://www.sno.phy.queensu.ca/~phil/exiftool) to process the file
+* work in progress
+
