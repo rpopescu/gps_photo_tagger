@@ -29,7 +29,7 @@ class photo_time
 	
 	function time_str()
 	{
-		return "$this->timestamp - ".date("H:i:s", $this->timestamp);
+		return $this->date." ".($this->tz > 0 ? '+' : '-').$this->tz;
 	}
 }
 
@@ -54,9 +54,24 @@ function get_photo_times($fnames_array, $debug_cmd = FALSE)
 		if($l == "") break;
 		$atoms = explode(",", $l);
 		$info[] = $foo = new photo_time(trim($atoms[0]), trim($atoms[1]), trim($atoms[2]));
-		echo $foo->time_str()."\n";
 	}
 	return $info;
+}
+
+/// Generate and execute the call to exiftool to set the GPS parameters.
+function set_photo_gps_info($fname, $lat, $lat_ref, $long, $long_ref, $timestamp)
+{
+	$cmd = "bash -c 'exiftool -overwrite_original -P -q -fast ";
+	$cmd .= "\"-GPSDateStamp=".date("Y:m:d", $timestamp)."\" ";
+	$cmd .= "\"-GPSDateTime=".date("Y:m:d H:i:s", $timestamp)."\" ";
+	$cmd .= "\"-GPSLatitude=".$lat[0]." ".$lat[1]." ".$lat[2]."\" ";
+	$cmd .= "\"-GPSLatitudeRef=".$lat_ref."\" ";
+	$cmd .= "\"-GPSLongitude=".$long[0]." ".$long[1]." ".$long[2]."\" ";
+	$cmd .= "\"-GPSLongitudeRef=".$long_ref."\" ";
+	$cmd .= "\"-GPSTimeStamp=".date("H:i:s", $timestamp)."\"";
+	$cmd .= " \"$fname\"'";
+	if(TAGGER_DEBUG) echo "[debug] ".$cmd."\n";
+	if(!DRY_RUN) `$cmd`;
 }
 
 function usage($argv)
@@ -68,6 +83,6 @@ function usage($argv)
 	}
 }
 
-usage($argv);
+//usage($argv);
 
 ?>
